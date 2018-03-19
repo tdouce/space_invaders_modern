@@ -66,6 +66,7 @@ class SpaceInvaders < Gosu::Window
     @aliens = remove_hit_aliens(@aliens)
 
     @font.draw("Health: #{ player.health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw("Points: #{ player.health }", 10, 35, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
 
     if player.dead?
       @font.draw("GAME OVER", 180, 80, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
