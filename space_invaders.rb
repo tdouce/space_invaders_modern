@@ -22,6 +22,7 @@ class SpaceInvaders < Gosu::Window
     @player_lasers = []
     @alien_lasers = []
     @aliens = [Alien::SpaceShip.new]
+    @time_milli = 0
   end
 
   def update
@@ -42,6 +43,14 @@ class SpaceInvaders < Gosu::Window
 
     player.move
     @aliens.each {|alien| alien.go }
+
+    @aliens.each do |alien|
+      if alien.time_to_shoot?(calc_seconds)
+        @alien_lasers << alien.shoot_laser
+      end
+    end
+
+    @time_milli += update_interval
   end
 
   def draw
@@ -49,14 +58,20 @@ class SpaceInvaders < Gosu::Window
     @aliens.each {|alien| alien.draw }
     @player_lasers.each {|laser| laser.draw }
     @alien_lasers.each {|laser| laser.draw }
-    # @alien_lasers = @aliens.map {|alien| alien.shoot_laser }
-
 
     player.draw
     # @font.draw("Total Score: #{ 0 }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
   end
 
   private
+
+  def calc_seconds
+    if @time_milli > 1
+      @time_milli / 1000
+    else
+      @time_milli
+    end
+  end
 
   def remove_hit_aliens(aliens, lasers)
     aliens.reject do |alien|
@@ -88,9 +103,9 @@ class SpaceInvaders < Gosu::Window
         close
       when Gosu::KB_SPACE
         @player_lasers << player.shoot_laser
-        @aliens.each do |alien|
-          @alien_lasers << alien.shoot_laser
-        end
+        # @aliens.each do |alien|
+        #   @alien_lasers << alien.shoot_laser
+        # end
       else
         super
     end
