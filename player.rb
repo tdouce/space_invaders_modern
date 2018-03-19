@@ -54,6 +54,12 @@ class Player
     @health <= 0
   end
 
+  def hit_alien?(alien)
+    @lasers.any? do |laser|
+      collectable?(alien.x, alien.y, laser.x, laser.y)
+    end
+  end
+
   def assess_damage(lasers, seconds)
     second = seconds.round
 

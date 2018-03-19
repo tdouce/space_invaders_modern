@@ -18,6 +18,16 @@ module Alien
       @shot_second = 0
     end
 
+    # QUESTION: Why does attr_reader not make this available as a method?
+    def x
+      @x
+    end
+
+    # QUESTION: Why does attr_reader not make this available as a method?
+    def y
+      @y
+    end
+
     def draw
       @image.draw_rot(@x, @y, ZOrder::PLAYER, @angle + 10, 0.5, 0.5, 0.1, 0.1)
     end
