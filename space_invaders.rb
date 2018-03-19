@@ -14,8 +14,7 @@ class SpaceInvaders < Gosu::Window
     self.caption = "Space Invaders"
 
     @background_image = Gosu::Image.new("media/space.png", tileable: true)
-    @player = Player.new
-    @player.move_to(320, 470)
+    @player = Player.new(x: 320, y: 470)
   end
 
   def update

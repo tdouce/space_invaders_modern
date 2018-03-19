@@ -2,19 +2,14 @@ require 'gosu'
 include Gosu
 
 class Player
-  def initialize
+  def initialize(x:, y:)
     @image = Gosu::Image.new("media/space_ship.bmp")
     @beep = Gosu::Sample.new("media/beep.wav")
-    @x = 0
-    @y = 0
+    @x = x
+    @y = y
     @vel_x = 0
     @vel_y = 0
     @angle = 0.0
-  end
-
-  def move_to(x, y)
-    @x = x
-    @y = y
   end
 
   def move_left
