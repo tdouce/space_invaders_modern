@@ -2,6 +2,8 @@ require 'gosu'
 include Gosu
 
 class Player
+  attr_reader :angle, :x, :y, :vel_x, :vel_y
+
   def initialize(x:, y:)
     @image = Gosu::Image.new("media/space_ship.bmp")
     @beep = Gosu::Sample.new("media/beep.wav")
