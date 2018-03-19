@@ -2,7 +2,7 @@ require_relative 'zorder'
 include ZOrder
 
 class Laser
-  attr_reader :y
+  attr_reader :x, :y
 
   def initialize(x:, y:, angle:, vel_x:, vel_y:)
     @image = Gosu::Image.new("media/laser.png")

@@ -2,6 +2,7 @@ require 'gosu'
 require_relative 'player'
 require_relative 'laser'
 require_relative 'zorder'
+require_relative 'alien/space_ship'
 
 include Gosu
 include ZOrder
@@ -19,6 +20,7 @@ class SpaceInvaders < Gosu::Window
     @background_image = Gosu::Image.new("media/space.png", tileable: true)
     @player = Player.new(x: 320, y: 470)
     @lasers = []
+    @aliens = [Alien::SpaceShip.new]
   end
 
   def update
@@ -34,13 +36,16 @@ class SpaceInvaders < Gosu::Window
       @lasers.each {|laser| laser.go }
     end
 
+    @lasers = @lasers.reject {|laser| outside_viewable_window?(laser.y) }
+    @aliens = remove_hit_aliens(@aliens, @lasers)
+
     player.move
+    @aliens.each {|alien| alien.go }
   end
 
   def draw
     @background_image.draw(0, 0, ZOrder::BACKGROUND)
-
-    @lasers = @lasers.reject {|laser| outside_viewable_window?(laser.y) }
+    @aliens.each {|alien| alien.draw }
 
     if lasers?
       @lasers.each {|laser| laser.draw }
@@ -48,6 +53,20 @@ class SpaceInvaders < Gosu::Window
 
     player.draw
     # @font.draw("Total Score: #{ 0 }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+  end
+
+  private
+
+  def remove_hit_aliens(aliens, lasers)
+    aliens.reject do |alien|
+      alien_hit_by_lasers?(alien, lasers)
+    end
+  end
+
+  def alien_hit_by_lasers?(alien, lasers)
+    lasers.any? do |laser|
+      alien.hit_by?(laser)
+    end
   end
 
   def outside_viewable_window?(y)
