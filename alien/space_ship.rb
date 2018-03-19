@@ -43,17 +43,12 @@ module Alien
 
       if (@shot_second != second)
         @shot_second = second
-        @shots_fired += 1
       else
         false
       end
     end
 
     private
-
-    def max_shots_per_second
-      1
-    end
 
     # TODO: Move to module 'Hittable'?
     def collectable?(x_threshold, y_threshold, star_x, star_y)
