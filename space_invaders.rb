@@ -21,7 +21,9 @@ class SpaceInvaders < Gosu::Window
     @player = Player.new(x: 320, y: 470)
     @player_lasers = []
     @alien_lasers = []
-    @aliens = [Alien::SpaceShip.new]
+    @aliens = 1.upto(3).map do |_|
+      Alien::SpaceShip.new(x: rand(0..600), y: rand(40..200), angle: rand(10))
+    end
     @time_milli = 0
     @font = Gosu::Font.new(20)
   end

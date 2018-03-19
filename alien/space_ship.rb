@@ -7,7 +7,7 @@ module Alien
   attr_reader :x, :y, :angle, :vel_x, :vel_y
 
   class SpaceShip
-    def initialize(x: 50, y: 50, angle: 5, vel_x: 5, vel_y: 0)
+    def initialize(x: 50, y: 50, angle: 5, vel_x: 0, vel_y: 0)
       @image = Gosu::Image.new("media/alien_spaceship_1.png")
       @x = x
       @y = y
@@ -57,6 +57,8 @@ module Alien
 
     def accelerate
       @vel_x += Gosu.offset_x(@angle, 0.9)
+
+      # NOTE: This is really good for harder levels!
       # @vel_y += Gosu.offset_y(@angle, 0.9)
     end
 
@@ -64,10 +66,10 @@ module Alien
       @x += @vel_x
       @y += @vel_y
       @x %= 640
-      # @y %= 480
+      @y %= 480
 
       @vel_x *= 0.95
-      # @vel_y *= 0.75
+      @vel_y *= 0.75
     end
   end
 end
