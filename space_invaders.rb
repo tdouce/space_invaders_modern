@@ -35,7 +35,7 @@ class SpaceInvaders < Gosu::Window
   def draw
     @background_image.draw(0, 0, ZOrder::BACKGROUND)
     @player.draw
-    @font.draw("Total Score: #{ 0 }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    # @font.draw("Total Score: #{ 0 }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
   end
 
   def button_down(id)
