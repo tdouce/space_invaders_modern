@@ -63,10 +63,13 @@ class SpaceInvaders < Gosu::Window
 
     @player.lasers = player.lasers.reject {|laser| outside_viewable_window?(laser.y) }
     @alien_lasers = @alien_lasers.reject {|laser| outside_viewable_window?(laser.y) }
-    @aliens = remove_hit_aliens(@aliens)
 
     @font.draw("Health: #{ player.health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-    @font.draw("Points: #{ player.health }", 10, 35, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw("Points: #{ player.tally_score(@aliens) }", 10, 35, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+
+    @aliens = @aliens.reject do |alien|
+      player.hit_alien?(alien)
+    end
 
     if player.dead?
       @font.draw("GAME OVER", 180, 80, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
@@ -81,10 +84,6 @@ class SpaceInvaders < Gosu::Window
     else
       @time_milli
     end
-  end
-
-  def remove_hit_aliens(aliens)
-    aliens.reject {|alien| player.hit_alien?(alien) }
   end
 
   def outside_viewable_window?(y)

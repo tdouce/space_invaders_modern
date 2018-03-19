@@ -4,7 +4,7 @@ require 'gosu'
 include ZOrder
 
 module Alien
-  attr_reader :x, :y, :angle, :vel_x, :vel_y
+  attr_reader :x, :y, :angle, :vel_x, :vel_y, :points_worth
 
   class SpaceShip
     def initialize(x: 50, y: 50, angle: 5, vel_x: 0, vel_y: 0)
@@ -16,6 +16,12 @@ module Alien
       @vel_y = vel_y
       @shots_fired = 0
       @shot_second = 0
+      @points_worth = 10
+    end
+
+    # QUESTION: Why does attr_reader not make this available as a method?
+    def points_worth
+      @points_worth
     end
 
     # QUESTION: Why does attr_reader not make this available as a method?

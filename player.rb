@@ -2,7 +2,7 @@ require 'gosu'
 include Gosu
 
 class Player
-  attr_reader :angle, :x, :y, :vel_x, :vel_y, :health
+  attr_reader :angle, :x, :y, :vel_x, :vel_y, :health, :score
   attr_accessor :lasers
 
   def initialize(x:, y:)
@@ -55,9 +55,7 @@ class Player
   end
 
   def hit_alien?(alien)
-    @lasers.any? do |laser|
-      collectable?(alien.x, alien.y, laser.x, laser.y)
-    end
+    @lasers.any? {|laser| collectable?(alien.x, alien.y, laser.x, laser.y) }
   end
 
   def assess_damage(lasers, seconds)
@@ -73,6 +71,19 @@ class Player
 
   def valid_hit?(second, lasers)
     (@hit_second != second) && hit_by_laser?(lasers)
+  end
+
+  def tally_score(aliens)
+    @score = aliens.reduce(@score) do |memo, alien|
+      points_per_laser = 0
+      lasers.each do |laser|
+        if collectable?(alien.x, alien.y, laser.x, laser.y)
+          points_per_laser += alien.points_worth
+        end
+      end
+
+      memo + points_per_laser
+    end
   end
 
   def hit_by_laser?(lasers)
