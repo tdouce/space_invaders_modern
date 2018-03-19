@@ -63,7 +63,7 @@ class SpaceInvaders < Gosu::Window
 
     @player.lasers = player.lasers.reject {|laser| outside_viewable_window?(laser.y) }
     @alien_lasers = @alien_lasers.reject {|laser| outside_viewable_window?(laser.y) }
-    @aliens = remove_hit_aliens(@aliens, player)
+    @aliens = remove_hit_aliens(@aliens)
 
     @font.draw("Health: #{ player.health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
 
@@ -82,8 +82,8 @@ class SpaceInvaders < Gosu::Window
     end
   end
 
-  def remove_hit_aliens(aliens, lasers)
-    aliens.reject { |alien| player.hit_alien?(alien) }
+  def remove_hit_aliens(aliens)
+    aliens.reject {|alien| player.hit_alien?(alien) }
   end
 
   def outside_viewable_window?(y)
