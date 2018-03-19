@@ -14,7 +14,7 @@ module Alien
       @angle = angle
       @vel_x = vel_x
       @vel_y = vel_y
-      @shots_fired_for_second = 0
+      @shots_fired = 0
       @shot_second = 0
     end
 
@@ -39,15 +39,11 @@ module Alien
     end
 
     def time_to_shoot?(seconds)
-      rounded_seconds = seconds.round
-      last_integer = rounded_seconds.to_s[-1].to_i
+      second = seconds.round
 
-      if (rand(10) == last_integer) && (@shots_fired_for_second < max_shots_per_second)
-        @shots_fired_for_second += 1
-        true
-      elsif @shot_second != rounded_seconds
-        @shots_fired_for_second = 0
-        @shot_second = rounded_seconds
+      if (@shot_second != second)
+        @shot_second = second
+        @shots_fired += 1
       else
         false
       end
