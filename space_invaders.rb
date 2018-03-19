@@ -9,8 +9,6 @@ class SpaceInvaders < Gosu::Window
   HEIGHT = 500
   WIDTH = 800
 
-  attr_reader :star_anim
-
   def initialize
     super(WIDTH, HEIGHT)
     self.caption = "Space Invaders"
