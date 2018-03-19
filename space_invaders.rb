@@ -53,6 +53,8 @@ class SpaceInvaders < Gosu::Window
       end
     end
 
+    @player.assess_damage(@alien_lasers, calc_seconds)
+
     @time_milli += update_interval
   end
 
@@ -61,8 +63,6 @@ class SpaceInvaders < Gosu::Window
     @aliens.each {|alien| alien.draw }
     @player_lasers.each {|laser| laser.draw }
     @alien_lasers.each {|laser| laser.draw }
-
-    @player.assess_damage(@alien_lasers, calc_seconds)
 
     player.draw
 
