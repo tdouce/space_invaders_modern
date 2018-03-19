@@ -13,7 +13,8 @@ class Player
   end
 
   def move_to(x, y)
-    @x, @y = x, y
+    @x = x
+    @y = y
   end
 
   def move_left

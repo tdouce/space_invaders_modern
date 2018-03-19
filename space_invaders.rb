@@ -6,27 +6,27 @@ include Gosu
 include ZOrder
 
 class SpaceInvaders < Gosu::Window
-  HEIGHT = 640
-  WIDTH = 440
+  HEIGHT = 500
+  WIDTH = 800
 
   attr_reader :star_anim
 
   def initialize
-    super(HEIGHT, WIDTH)
+    super(WIDTH, HEIGHT)
     self.caption = "Space Invaders"
 
     @background_image = Gosu::Image.new("media/space.png", tileable: true)
     @player = Player.new
-    @player.move_to(320, 240)
+    @player.move_to(320, 470)
   end
 
   def update
     if Gosu.button_down?(Gosu::KB_LEFT) || Gosu::button_down?(Gosu::GP_LEFT)
-      @player.turn_left
+      @player.move_left
     end
 
     if Gosu.button_down?(Gosu::KB_RIGHT) || Gosu::button_down?(Gosu::GP_RIGHT)
-      @player.turn_right
+      @player.move_right
     end
 
     @player.move
