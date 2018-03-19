@@ -56,8 +56,10 @@ module Alien
 
     def time_to_shoot?(seconds)
       second = seconds.round
+      second_dig_1 = second.to_s[-1].to_i
+      second_dig_2 = second.to_s[-2].to_i
 
-      if (@shot_second != second)
+      if (@shot_second != second) && ((second_dig_1 + second_dig_2) == rand(100))
         @shot_second = second
       else
         false
