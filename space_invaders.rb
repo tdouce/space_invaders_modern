@@ -48,7 +48,9 @@ class SpaceInvaders < Gosu::Window
       end
     end
 
-    @player.assess_damage(@alien_lasers, calc_seconds)
+    unless player.dead?
+      @player.assess_damage(@alien_lasers, calc_seconds)
+    end
 
     @time_milli += update_interval
   end
@@ -72,7 +74,7 @@ class SpaceInvaders < Gosu::Window
     end
 
     if player.dead?
-      @font.draw("GAME OVER", 180, 80, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+      @font.draw("GAME OVER", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     end
   end
 
@@ -103,7 +105,9 @@ class SpaceInvaders < Gosu::Window
       when Gosu::KB_ESCAPE
         close
       when Gosu::KB_SPACE
-        player.shoot_laser
+        unless player.dead?
+          player.shoot_laser
+        end
       else
         super
     end
