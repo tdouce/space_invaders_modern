@@ -2,7 +2,7 @@ require 'gosu'
 include Gosu
 
 class Player
-  attr_reader :angle, :x, :y, :vel_x, :vel_y
+  attr_reader :angle, :x, :y, :vel_x, :vel_y, :health
 
   def initialize(x:, y:)
     @image = Gosu::Image.new("media/space_ship.bmp")
@@ -12,6 +12,8 @@ class Player
     @vel_x = 0
     @vel_y = 0
     @angle = 0.0
+    @health = 10
+    @hit_second = 0
   end
 
   def move_left
@@ -48,7 +50,30 @@ class Player
     )
   end
 
-  # def collectable?(x_threshold, y_threshold, star_x, star_y)
-  #   Gosu.distance(x_threshold, y_threshold, star_x, star_y) < 35
-  # end
+  def dead?
+    @health <= 0
+  end
+
+  def assess_damage(lasers, seconds)
+    second = seconds.round
+
+    if valid_hit?(second, lasers)
+        @hit_second = second
+        @health -= 1
+    else
+      false
+    end
+  end
+
+  def valid_hit?(second, lasers)
+    (@hit_second != second) && hit_by_laser?(lasers)
+  end
+
+  def hit_by_laser?(lasers)
+    lasers.any? {|laser| collectable?(@x, @y, laser.x, laser.y)}
+  end
+
+  def collectable?(x_threshold, y_threshold, star_x, star_y)
+    Gosu.distance(x_threshold, y_threshold, star_x, star_y) < 35
+  end
 end

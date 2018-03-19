@@ -23,6 +23,7 @@ class SpaceInvaders < Gosu::Window
     @alien_lasers = []
     @aliens = [Alien::SpaceShip.new]
     @time_milli = 0
+    @font = Gosu::Font.new(20)
   end
 
   def update
@@ -34,14 +35,14 @@ class SpaceInvaders < Gosu::Window
       player.move_right
     end
 
+    player.move
+
     @player_lasers.each {|laser| laser.go }
     @alien_lasers.each {|laser| laser.go }
-
     @player_lasers = @player_lasers.reject {|laser| outside_viewable_window?(laser.y) }
     @alien_lasers = @alien_lasers.reject {|laser| outside_viewable_window?(laser.y) }
     @aliens = remove_hit_aliens(@aliens, @player_lasers)
 
-    player.move
     @aliens.each {|alien| alien.go }
 
     @aliens.each do |alien|
@@ -59,8 +60,15 @@ class SpaceInvaders < Gosu::Window
     @player_lasers.each {|laser| laser.draw }
     @alien_lasers.each {|laser| laser.draw }
 
+    @player.assess_damage(@alien_lasers, calc_seconds)
+
     player.draw
-    # @font.draw("Total Score: #{ 0 }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+
+    @font.draw("Health: #{ @player.health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+
+    if @player.dead?
+      @font.draw("GAME OVER", 180, 80, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    end
   end
 
   private
