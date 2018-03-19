@@ -1,5 +1,10 @@
+require_relative '../alien/alien_laser'
+require 'gosu'
+
+include ZOrder
+
 module Alien
-  attr_reader :x, :y
+  attr_reader :x, :y, :angle, :vel_x, :vel_y
 
   class SpaceShip
     def initialize(x: 50, y: 50, angle: 5, vel_x: 5, vel_y: 0)
@@ -22,6 +27,13 @@ module Alien
 
     def hit_by?(laser)
       collectable?(@x, @y, laser.x, laser.y)
+    end
+
+    def shoot_laser
+      Alien::Laser.new(
+        x: @x,
+        y: @y,
+      )
     end
 
     private

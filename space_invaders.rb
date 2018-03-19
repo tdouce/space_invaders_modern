@@ -19,7 +19,8 @@ class SpaceInvaders < Gosu::Window
 
     @background_image = Gosu::Image.new("media/space.png", tileable: true)
     @player = Player.new(x: 320, y: 470)
-    @lasers = []
+    @player_lasers = []
+    @alien_lasers = []
     @aliens = [Alien::SpaceShip.new]
   end
 
@@ -32,12 +33,12 @@ class SpaceInvaders < Gosu::Window
       player.move_right
     end
 
-    if lasers?
-      @lasers.each {|laser| laser.go }
-    end
+    @player_lasers.each {|laser| laser.go }
+    @alien_lasers.each {|laser| laser.go }
 
-    @lasers = @lasers.reject {|laser| outside_viewable_window?(laser.y) }
-    @aliens = remove_hit_aliens(@aliens, @lasers)
+    @player_lasers = @player_lasers.reject {|laser| outside_viewable_window?(laser.y) }
+    @alien_lasers = @alien_lasers.reject {|laser| outside_viewable_window?(laser.y) }
+    @aliens = remove_hit_aliens(@aliens, @player_lasers)
 
     player.move
     @aliens.each {|alien| alien.go }
@@ -46,10 +47,10 @@ class SpaceInvaders < Gosu::Window
   def draw
     @background_image.draw(0, 0, ZOrder::BACKGROUND)
     @aliens.each {|alien| alien.draw }
+    @player_lasers.each {|laser| laser.draw }
+    @alien_lasers.each {|laser| laser.draw }
+    # @alien_lasers = @aliens.map {|alien| alien.shoot_laser }
 
-    if lasers?
-      @lasers.each {|laser| laser.draw }
-    end
 
     player.draw
     # @font.draw("Total Score: #{ 0 }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
@@ -70,11 +71,7 @@ class SpaceInvaders < Gosu::Window
   end
 
   def outside_viewable_window?(y)
-    y <= 20
-  end
-
-  def lasers?
-    @lasers.length > 0
+    y <= 10
   end
 
   def arrow_right?
@@ -90,13 +87,10 @@ class SpaceInvaders < Gosu::Window
       when Gosu::KB_ESCAPE
         close
       when Gosu::KB_SPACE
-        @lasers << Laser.new(
-          x: player.x,
-          y: player.y,
-          angle: player.angle,
-          vel_x: player.vel_x,
-          vel_y: player.vel_y
-        )
+        @player_lasers << player.shoot_laser
+        @aliens.each do |alien|
+          @alien_lasers << alien.shoot_laser
+        end
       else
         super
     end

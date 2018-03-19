@@ -41,6 +41,13 @@ class Player
     @image.draw_rot(@x, @y, 1, @angle)
   end
 
+  def shoot_laser
+    Laser.new(
+      x: @x,
+      y: @y
+    )
+  end
+
   # def collectable?(x_threshold, y_threshold, star_x, star_y)
   #   Gosu.distance(x_threshold, y_threshold, star_x, star_y) < 35
   # end

@@ -4,7 +4,7 @@ include ZOrder
 class Laser
   attr_reader :x, :y
 
-  def initialize(x:, y:, angle:, vel_x:, vel_y:)
+  def initialize(x:, y:, angle: 0, vel_x: 0, vel_y: 0)
     @image = Gosu::Image.new("media/laser.png")
     @x = x
     @y = y
