@@ -19,7 +19,6 @@ class SpaceInvaders < Gosu::Window
 
     @background_image = Gosu::Image.new("media/space.png", tileable: true)
     @player = Player.new(x: 320, y: 470)
-    @player_lasers = []
     @alien_lasers = []
     @aliens = 1.upto(3).map do |_|
       Alien::SpaceShip.new(x: rand(0..600), y: rand(40..200), angle: rand(10))
@@ -39,12 +38,8 @@ class SpaceInvaders < Gosu::Window
 
     player.move
 
-    @player_lasers.each {|laser| laser.go }
+    @player.lasers.each {|laser| laser.go }
     @alien_lasers.each {|laser| laser.go }
-    @player_lasers = @player_lasers.reject {|laser| outside_viewable_window?(laser.y) }
-    @alien_lasers = @alien_lasers.reject {|laser| outside_viewable_window?(laser.y) }
-    @aliens = remove_hit_aliens(@aliens, @player_lasers)
-
     @aliens.each {|alien| alien.go }
 
     @aliens.each do |alien|
@@ -61,14 +56,18 @@ class SpaceInvaders < Gosu::Window
   def draw
     @background_image.draw(0, 0, ZOrder::BACKGROUND)
     @aliens.each {|alien| alien.draw }
-    @player_lasers.each {|laser| laser.draw }
+    player.lasers.each {|laser| laser.draw }
     @alien_lasers.each {|laser| laser.draw }
 
     player.draw
 
-    @font.draw("Health: #{ @player.health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @player.lasers = player.lasers.reject {|laser| outside_viewable_window?(laser.y) }
+    @alien_lasers = @alien_lasers.reject {|laser| outside_viewable_window?(laser.y) }
+    @aliens = remove_hit_aliens(@aliens, player.lasers)
 
-    if @player.dead?
+    @font.draw("Health: #{ player.health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+
+    if player.dead?
       @font.draw("GAME OVER", 180, 80, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     end
   end
@@ -96,7 +95,7 @@ class SpaceInvaders < Gosu::Window
   end
 
   def outside_viewable_window?(y)
-    y <= 10
+    y <= 20
   end
 
   def arrow_right?
@@ -112,10 +111,7 @@ class SpaceInvaders < Gosu::Window
       when Gosu::KB_ESCAPE
         close
       when Gosu::KB_SPACE
-        @player_lasers << player.shoot_laser
-        # @aliens.each do |alien|
-        #   @alien_lasers << alien.shoot_laser
-        # end
+        player.shoot_laser
       else
         super
     end

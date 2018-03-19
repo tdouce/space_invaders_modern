@@ -3,6 +3,7 @@ include Gosu
 
 class Player
   attr_reader :angle, :x, :y, :vel_x, :vel_y, :health
+  attr_accessor :lasers
 
   def initialize(x:, y:)
     @image = Gosu::Image.new("media/space_ship.bmp")
@@ -14,6 +15,8 @@ class Player
     @angle = 0.0
     @health = 10
     @hit_second = 0
+    @score = 0
+    @lasers = []
   end
 
   def move_left
@@ -44,10 +47,7 @@ class Player
   end
 
   def shoot_laser
-    Laser.new(
-      x: @x,
-      y: @y
-    )
+    @lasers << Laser.new(x: @x, y: @y)
   end
 
   def dead?
