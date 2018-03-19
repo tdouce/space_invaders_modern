@@ -74,15 +74,16 @@ class Player
   end
 
   def tally_score(aliens)
-    @score = aliens.reduce(@score) do |memo, alien|
-      points_per_laser = 0
-      lasers.each do |laser|
+    @score = lasers.reduce(@score) do |memo, laser|
+      points_per_alien = aliens.reduce(0) do |laser_memo, alien|
         if collectable?(alien.x, alien.y, laser.x, laser.y)
-          points_per_laser += alien.points_worth
+          laser_memo += alien.points_worth
         end
+
+        laser_memo
       end
 
-      memo + points_per_laser
+      points_per_alien + memo
     end
   end
 
@@ -90,6 +91,7 @@ class Player
     lasers.any? {|laser| collectable?(@x, @y, laser.x, laser.y)}
   end
 
+  # TODO: Move this to a module
   def collectable?(x_threshold, y_threshold, star_x, star_y)
     Gosu.distance(x_threshold, y_threshold, star_x, star_y) < 35
   end
