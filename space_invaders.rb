@@ -1,5 +1,5 @@
 require 'gosu'
-require_relative 'space_ship'
+require_relative 'player'
 require_relative 'zorder'
 
 include Gosu
@@ -16,25 +16,25 @@ class SpaceInvaders < Gosu::Window
     self.caption = "Space Invaders"
 
     @background_image = Gosu::Image.new("media/space.png", tileable: true)
-    @space_ship = SpaceShip.new
-    @space_ship.move_to(320, 240)
+    @player = Player.new
+    @player.move_to(320, 240)
   end
 
   def update
     if Gosu.button_down?(Gosu::KB_LEFT) || Gosu::button_down?(Gosu::GP_LEFT)
-      @space_ship.turn_left
+      @player.turn_left
     end
 
     if Gosu.button_down?(Gosu::KB_RIGHT) || Gosu::button_down?(Gosu::GP_RIGHT)
-      @space_ship.turn_right
+      @player.turn_right
     end
 
-    @space_ship.move
+    @player.move
   end
 
   def draw
     @background_image.draw(0, 0, ZOrder::BACKGROUND)
-    @space_ship.draw
+    @player.draw
     @font.draw("Total Score: #{ 0 }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
   end
 

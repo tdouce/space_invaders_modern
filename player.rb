@@ -1,7 +1,7 @@
 require 'gosu'
 include Gosu
 
-class SpaceShip
+class Player
   def initialize
     @image = Gosu::Image.new("media/space_ship.bmp")
     @beep = Gosu::Sample.new("media/beep.wav")
