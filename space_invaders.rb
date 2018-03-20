@@ -3,6 +3,7 @@ require_relative 'player'
 require_relative 'laser'
 require_relative 'zorder'
 require_relative 'alien/space_ship'
+require_relative 'levels/level_one'
 
 include Gosu
 include ZOrder
@@ -17,12 +18,11 @@ class SpaceInvaders < Gosu::Window
     super(WIDTH, HEIGHT)
     self.caption = "Space Invaders"
 
+    @level = Levels::LevelOne.new
     @background_image = Gosu::Image.new("media/space.png", tileable: true)
     @player = Player.new(x: 320, y: 470)
     @alien_lasers = []
-    @aliens = 1.upto(3).map do |_|
-      Alien::SpaceShip.new(x: rand(0..600), y: rand(40..200), angle: rand(10))
-    end
+    @aliens = @level.aliens
     @time_milli = 0
     @font = Gosu::Font.new(20)
   end
