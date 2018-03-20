@@ -4,9 +4,10 @@ require 'gosu'
 include ZOrder
 
 module Alien
-  attr_reader :x, :y, :angle, :vel_x, :vel_y, :points_worth
-
   class SpaceShip
+    attr_reader :x, :y, :angle, :vel_x, :vel_y, :points_worth
+    attr_accessor :lasers
+
     def initialize(x: 50, y: 50, angle: 5, vel_x: 0, vel_y: 0)
       @image = Gosu::Image.new("media/alien_spaceship_1.png")
       @x = x
@@ -17,21 +18,7 @@ module Alien
       @shots_fired = 0
       @shot_second = 0
       @points_worth = 10
-    end
-
-    # QUESTION: Why does attr_reader not make this available as a method?
-    def points_worth
-      @points_worth
-    end
-
-    # QUESTION: Why does attr_reader not make this available as a method?
-    def x
-      @x
-    end
-
-    # QUESTION: Why does attr_reader not make this available as a method?
-    def y
-      @y
+      @lasers = []
     end
 
     def draw
@@ -48,10 +35,7 @@ module Alien
     end
 
     def shoot_laser
-      Alien::Laser.new(
-        x: @x,
-        y: @y,
-      )
+      @lasers << Alien::Laser.new(x: @x, y: @y)
     end
 
     def time_to_shoot?(seconds)

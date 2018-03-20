@@ -1,6 +1,29 @@
 require_relative '../alien/space_ship'
+require_relative '../fortification/quadralateral'
+require_relative '../fortification/damage'
+require 'set'
 
 module Levels
+  class Fortifications
+    def initialize
+      @fortifcations = [
+        Fortification::Quadralateral.new(top_left_x: 50, top_left_y: 385, width: 20),
+        Fortification::Quadralateral.new(top_left_x: 300, top_left_y: 385, width: 20),
+        Fortification::Quadralateral.new(top_left_x: 550, top_left_y: 385, width: 20),
+      ]
+    end
+
+    def draw
+      @fortifcations.each {|f| f.draw }
+    end
+
+    def assess_damage(player, aliens)
+      @fortifcations.map do |f|
+        f.assess_laser_damages(player, aliens)
+      end
+    end
+  end
+
   class LevelOne
     attr_accessor :kill_count
 
@@ -8,8 +31,8 @@ module Levels
       @kill_count = 0
     end
 
-    def id
-      1
+    def name
+      "Level One"
     end
 
     def repopulation_threshold
@@ -24,6 +47,10 @@ module Levels
       @kill_count == kills_to_win
     end
 
+    def repopulate_aliens?(aliens)
+      aliens.length <= repopulation_threshold
+    end
+
     def kills_to_win
       15
     end
@@ -36,6 +63,10 @@ module Levels
 
     def background_image
       Gosu::Image.new("media/space.png", tileable: true)
+    end
+
+    def player_fortifications
+      Fortifications.new
     end
   end
 end
