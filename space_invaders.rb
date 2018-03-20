@@ -63,8 +63,8 @@ class SpaceInvaders < Gosu::Window
 
     player.draw
 
-    @player.lasers = player.lasers.reject {|laser| outside_viewable_window?(laser.y) }
-    @alien_lasers = @alien_lasers.reject {|laser| outside_viewable_window?(laser.y) }
+    @player.lasers = player.lasers.select {|laser| inside_viewable_window?(laser.y) }
+    @alien_lasers = @alien_lasers.select {|laser| inside_viewable_window?(laser.y) }
 
     @font.draw("Health: #{ player.health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     @font.draw("Points: #{ player.tally_score(@aliens) }", 10, 35, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
@@ -88,8 +88,8 @@ class SpaceInvaders < Gosu::Window
     end
   end
 
-  def outside_viewable_window?(y)
-    y <= 20
+  def inside_viewable_window?(y)
+    y >= 40 && y <= 470
   end
 
   def arrow_right?
