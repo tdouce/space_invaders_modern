@@ -1,4 +1,4 @@
-require_relative '../alien/alien_laser'
+require_relative '../alien/laser'
 require 'gosu'
 
 include ZOrder
