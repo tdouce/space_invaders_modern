@@ -11,5 +11,9 @@ module Levels
         Alien::SpaceShip.new(x: rand(0..600), y: rand(40..200), angle: rand(10))
       end
     end
+
+    def background_image
+      Gosu::Image.new("media/space.png", tileable: true)
+    end
   end
 end

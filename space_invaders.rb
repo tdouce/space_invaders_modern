@@ -19,7 +19,7 @@ class SpaceInvaders < Gosu::Window
     self.caption = "Space Invaders"
 
     @level = Levels::LevelOne.new
-    @background_image = Gosu::Image.new("media/space.png", tileable: true)
+    @background_image = @level.background_image
     @player = Player.new(x: 320, y: 470)
     @alien_lasers = []
     @aliens = @level.aliens
