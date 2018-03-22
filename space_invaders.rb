@@ -61,11 +61,7 @@ class SpaceInvaders < Gosu::Window
     @fortifications.assess_damage(player, @aliens)
 
     unless @level.won?
-      @aliens.each do |alien|
-        if alien.time_to_shoot?(calc_seconds)
-          alien.shoot_laser
-        end
-      end
+      @aliens.each {|alien| alien.shoot_laser(calc_seconds)}
     end
 
     @font.draw("Health: #{ player.health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
@@ -82,7 +78,6 @@ class SpaceInvaders < Gosu::Window
       end
 
       if @level.repopulate_aliens?(@aliens)
-        # TODO: move this logic to alien
         @level.aliens.each do |alien|
           @aliens << alien
         end

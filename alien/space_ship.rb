@@ -34,9 +34,13 @@ module Alien
       collectable?(@x, @y, laser.x, laser.y)
     end
 
-    def shoot_laser
-      @lasers << Alien::Laser.new(x: @x, y: @y)
+    def shoot_laser(seconds)
+      if time_to_shoot?(seconds)
+        @lasers << Alien::Laser.new(x: @x, y: @y)
+      end
     end
+
+    private
 
     def time_to_shoot?(seconds)
       second = seconds.round
@@ -49,8 +53,6 @@ module Alien
         false
       end
     end
-
-    private
 
     # TODO: Move to module 'Hittable'?
     def collectable?(x_threshold, y_threshold, star_x, star_y)
