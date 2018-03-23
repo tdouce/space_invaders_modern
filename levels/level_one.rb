@@ -56,7 +56,7 @@ module Levels
     end
 
     def aliens
-      1.upto(rand(6)).map do |_|
+      1.upto(rand(8)).map do |_|
         Alien::SpaceShip.new(x: 0, y: rand(40..200), angle: rand(-20..20))
       end
     end
