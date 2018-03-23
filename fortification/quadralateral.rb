@@ -73,7 +73,7 @@ module Fortification
 
     # TODO: Move this to a module
     def collectable?(x_threshold, y_threshold, star_x, star_y)
-      Gosu.distance(x_threshold, y_threshold, star_x, star_y) < 5
+      Gosu.distance(x_threshold, y_threshold, star_x, star_y) < 10
     end
   end
 
