@@ -105,12 +105,9 @@ module Fortification
 
     private
 
-    # TODO: Refactor this
     def assess_laser_damage(player, aliens)
-      new_layers = []
-      @layers.each do |layer|
-        sublayers = []
-        layer.each do |sublayer|
+      @layers.map do |layer|
+        layer.reduce([]) do |memo, sublayer|
           laser_damages = sublayer.assess_laser_damages(
             player: player,
             aliens: aliens
@@ -118,14 +115,12 @@ module Fortification
 
           if !laser_damages.hit?
             sublayer.draw
-            sublayers << sublayer
+            memo << sublayer
           end
+
+          memo
         end
-
-        new_layers << sublayers
       end
-
-      new_layers
     end
 
     def initialize_layers
