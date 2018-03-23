@@ -45,6 +45,7 @@ module Fortification
       hit = false
 
       player.lasers = player.lasers.reject do |laser|
+        # TODO: move #hit? to Laser
         if hit?(laser)
           hit = true
         else
@@ -54,6 +55,7 @@ module Fortification
 
       aliens.each do |alien|
         alien.lasers = alien.lasers.reject do |laser|
+          # TODO: move #hit? to Laser
           if hit?(laser)
             hit = true
           else
@@ -113,6 +115,7 @@ module Fortification
             player: player,
             aliens: aliens
           )
+
           if !laser_damages.hit?
             sublayer.draw
             sublayers << sublayer
