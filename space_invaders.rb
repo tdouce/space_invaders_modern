@@ -4,9 +4,11 @@ require_relative 'laser'
 require_relative 'zorder'
 require_relative 'alien/space_ship'
 require_relative 'levels/level_one'
+require_relative 'controllable'
 
 include Gosu
 include ZOrder
+include Controllable
 
 class SpaceInvaders < Gosu::Window
   HEIGHT = 500
@@ -110,15 +112,6 @@ class SpaceInvaders < Gosu::Window
 
   def inside_viewable_window?(y)
     y >= 40 && y <= 470
-  end
-
-  #TODO: move to a control module
-  def arrow_right?
-    Gosu.button_down?(Gosu::KB_RIGHT) || Gosu::button_down?(Gosu::GP_RIGHT)
-  end
-  #TODO: move to a control module
-  def arrow_left?
-    Gosu.button_down?(Gosu::KB_LEFT) || Gosu::button_down?(Gosu::GP_LEFT)
   end
 
   def button_down(id)
