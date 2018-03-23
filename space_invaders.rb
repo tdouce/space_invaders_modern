@@ -69,7 +69,7 @@ class SpaceInvaders < Gosu::Window
 
     unless @level.won?
       @aliens = @aliens.reject do |alien|
-        if player.hit_alien?(alien)
+        if player.shot_alien?(alien)
           @level.inc_kill_count
           true
         else
