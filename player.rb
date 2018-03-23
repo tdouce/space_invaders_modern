@@ -69,10 +69,6 @@ class Player
     end
   end
 
-  def valid_hit?(second, lasers)
-    (@hit_second != second) && hit_by_laser?(lasers)
-  end
-
   def tally_score(aliens)
     @score = lasers.reduce(@score) do |memo, laser|
       points_per_alien = aliens.reduce(0) do |laser_memo, alien|
@@ -85,6 +81,12 @@ class Player
 
       points_per_alien + memo
     end
+  end
+
+  private
+
+  def valid_hit?(second, lasers)
+    (@hit_second != second) && hit_by_laser?(lasers)
   end
 
   def hit_by_laser?(lasers)

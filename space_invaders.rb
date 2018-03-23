@@ -87,7 +87,10 @@ class SpaceInvaders < Gosu::Window
     if player.dead?
       @font.draw("GAME OVER", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     else
-      @player.assess_damage(@aliens.each {|alien| alien.lasers}, calc_seconds)
+      @player.assess_damage(
+        @aliens.map {|alien| alien.lasers}.flatten,
+        calc_seconds
+      )
     end
 
     if @level.won?
