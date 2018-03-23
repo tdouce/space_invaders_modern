@@ -6,7 +6,7 @@ module Alien
     attr_reader :x, :y
 
     def initialize(x:, y:, angle: 0, vel_x: 0, vel_y: 0)
-      @image = Gosu::Image.new("media/laser.png")
+      @image = Gosu::Image.new("media/alien_laser.png")
       @x = x
       @y = y
       @angle = angle
@@ -15,7 +15,7 @@ module Alien
     end
 
     def draw
-      @image.draw_rot(@x + 3, @y + 25, ZOrder::PLAYER, @angle + 30, 0.5, 0.5, 0.05, 0.05)
+      @image.draw_rot(@x - 3, @y + 30, ZOrder::BACKGROUND, @angle + 43, 0.5, 0.5, 0.04, 0.07)
     end
 
     def go
