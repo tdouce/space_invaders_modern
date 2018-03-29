@@ -42,8 +42,11 @@ class Player
     @vel_y *= 0.95
   end
 
-  def draw
-    @image.draw_rot(@x, @y, 1, @angle)
+  def draw(lasers, seconds)
+    hit = assess_damage(lasers, seconds)
+    unless hit
+      @image.draw_rot(@x, @y, 1, @angle)
+    end
   end
 
   def shoot_laser
@@ -56,17 +59,6 @@ class Player
 
   def shot_alien?(alien)
     @lasers.any? {|laser| collectable?(alien.x, alien.y, laser.x, laser.y) }
-  end
-
-  def assess_damage(lasers, seconds)
-    second = seconds.round
-
-    if valid_hit?(second, lasers)
-        @hit_second = second
-        @health -= 1
-    else
-      false
-    end
   end
 
   def tally_score(aliens)
@@ -84,6 +76,18 @@ class Player
   end
 
   private
+
+  def assess_damage(lasers, seconds)
+    second = seconds.round
+
+    if valid_hit?(second, lasers)
+      @hit_second = second
+      @health -= 1
+      true
+    else
+      false
+    end
+  end
 
   def valid_hit?(second, lasers)
     (@hit_second != second) && hit_by_laser?(lasers)

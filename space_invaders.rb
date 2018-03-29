@@ -53,7 +53,10 @@ class SpaceInvaders < Gosu::Window
     player.lasers.each {|laser| laser.draw }
     @aliens.each {|alien| alien.lasers.each {|laser| laser.draw }}
     @fortifications.draw
-    player.draw
+    player.draw(
+      @aliens.map {|alien| alien.lasers}.flatten,
+      calc_seconds
+    )
 
     @player.lasers = player.lasers.select {|laser| inside_viewable_window?(laser.y) }
     @aliens.each do |alien|
@@ -88,11 +91,6 @@ class SpaceInvaders < Gosu::Window
 
     if player.dead?
       @font.draw("GAME OVER", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-    else
-      @player.assess_damage(
-        @aliens.map {|alien| alien.lasers}.flatten,
-        calc_seconds
-      )
     end
 
     if @level.won?
