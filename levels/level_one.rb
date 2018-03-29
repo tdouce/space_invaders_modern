@@ -25,10 +25,11 @@ module Levels
   end
 
   class LevelOne
-    attr_accessor :kill_count
+    attr_accessor :kill_count, :aliens
 
     def initialize
       @kill_count = 0
+      @aliens = initialize_aliens
     end
 
     def name
@@ -47,21 +48,14 @@ module Levels
       @kill_count == kills_to_win
     end
 
-    def repopulate_aliens?(aliens)
-      aliens.length <= repopulation_threshold
+    def repopulate_aliens
+      if repopulate_aliens?
+        @aliens = @aliens + initialize_aliens
+      end
     end
 
     def kills_to_win
       15
-    end
-
-    def aliens
-      1.upto(rand(8)).map do |_|
-        Alien::SpaceShip.new(
-          x: 0,
-          y: rand(40..200), angle: rand(-20..20)
-        )
-      end
     end
 
     def background_image
@@ -70,6 +64,21 @@ module Levels
 
     def player_fortifications
       Fortifications.new
+    end
+
+    private
+
+    def initialize_aliens
+      1.upto(rand(8)).map do |_|
+        Alien::SpaceShip.new(
+          x: 0,
+          y: rand(40..200), angle: rand(-20..20)
+        )
+      end
+    end
+
+    def repopulate_aliens?
+      @aliens.length <= repopulation_threshold
     end
   end
 end
