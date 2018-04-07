@@ -30,7 +30,6 @@ module Levels
     def initialize
       @kill_count = 0
       @aliens = initialize_aliens
-      @score = 0
     end
 
     def players
@@ -54,7 +53,9 @@ module Levels
     end
 
     def score
-      @player_one.tally_score(@aliens)
+      players.reduce(0) do |memo, p|
+        memo += p.tally_score(@aliens)
+      end
     end
 
     def name
