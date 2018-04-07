@@ -21,7 +21,6 @@ class SpaceInvaders < Gosu::Window
     self.caption = "Space Invaders"
 
     @level = Levels::LevelOne.new
-    @background_image = @level.background_image
     @player = Player.new(x: 320, y: 470)
     @time_milli = 0
     @font = Gosu::Font.new(20)
@@ -47,7 +46,7 @@ class SpaceInvaders < Gosu::Window
   end
 
   def draw
-    @background_image.draw(0, 0, ZOrder::BACKGROUND)
+    @level.background_image.draw(0, 0, ZOrder::BACKGROUND)
     @level.aliens.each {|alien| alien.draw }
 
     unless @level.over?

@@ -67,7 +67,7 @@ module Levels
     end
 
     def background_image
-      Gosu::Image.new("media/space.png", tileable: true)
+      @background_image ||= Gosu::Image.new("media/space.png", tileable: true)
     end
 
     def player_fortifications
