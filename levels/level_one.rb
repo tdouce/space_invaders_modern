@@ -55,7 +55,7 @@ module Levels
     end
 
     def kills_to_win
-      15
+      45
     end
 
     def background_image
