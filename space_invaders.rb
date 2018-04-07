@@ -19,7 +19,6 @@ class SpaceInvaders < Gosu::Window
   def initialize
     super(WIDTH, HEIGHT)
     self.caption = "Space Invaders"
-
     @level = Levels::LevelOne.new
     @player = Player.new(x: 320, y: 470)
     @time_milli = 0
