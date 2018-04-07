@@ -44,6 +44,14 @@ module Levels
       @kill_count += 1
     end
 
+    def over?
+      won? || lost?
+    end
+
+    def lost?
+      player_health <= 0
+    end
+
     def won?
       @kill_count == kills_to_win
     end

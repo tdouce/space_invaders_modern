@@ -49,8 +49,12 @@ class SpaceInvaders < Gosu::Window
   def draw
     @background_image.draw(0, 0, ZOrder::BACKGROUND)
     @level.aliens.each {|alien| alien.draw }
-    player.lasers.each {|laser| laser.draw }
-    @level.aliens.each {|alien| alien.lasers.each {|laser| laser.draw }}
+
+    unless @level.over?
+      @level.players.each {|p| p.lasers.each {|laser| laser.draw } }
+      @level.aliens.each {|alien| alien.lasers.each {|laser| laser.draw }}
+    end
+
     @fortifications.draw
     player.draw(
       @level.aliens.map {|alien| alien.lasers}.flatten,
@@ -62,16 +66,18 @@ class SpaceInvaders < Gosu::Window
       alien.lasers = alien.lasers.select {|laser| inside_viewable_window?(laser.y) }
     end
 
-    @fortifications.assess_damage(player, @level.aliens)
+    unless @level.over?
+      @level.players.each do |p|
+        @fortifications.assess_damage(p, @level.aliens)
+      end
 
-    unless @level.won?
       @level.aliens.each {|alien| alien.shoot_laser(calc_seconds)}
     end
 
     @font.draw("Health: #{ player.health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     @font.draw("Points: #{ player.tally_score(@level.aliens) }", 10, 35, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    unless @level.over?
 
-    unless @level.won?
       @level.aliens = @level.aliens.reject do |alien|
         if player.shot_alien?(alien)
           @level.inc_kill_count
@@ -84,7 +90,7 @@ class SpaceInvaders < Gosu::Window
       @level.repopulate_aliens
     end
 
-    if player.dead?
+    if @level.lost?
       @font.draw("GAME OVER", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     end
 
