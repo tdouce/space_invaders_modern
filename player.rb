@@ -5,6 +5,8 @@ class Player
   attr_reader :angle, :x, :y, :vel_x, :vel_y, :health, :score
   attr_accessor :lasers
 
+  INITIAL_HEALTH = 5
+
   def initialize(x:, y:)
     @image = Gosu::Image.new("media/space_ship.bmp")
     @beep = Gosu::Sample.new("media/beep.wav")
@@ -13,7 +15,7 @@ class Player
     @vel_x = 0
     @vel_y = 0
     @angle = 0.0
-    @health = 10
+    @health = INITIAL_HEALTH
     @hit_second = 0
     @score = 0
     @lasers = []

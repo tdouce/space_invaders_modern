@@ -14,13 +14,10 @@ class SpaceInvaders < Gosu::Window
   HEIGHT = 500
   WIDTH = 800
 
-  attr_reader :player
-
   def initialize
     super(WIDTH, HEIGHT)
     self.caption = "Space Invaders"
     @level = Levels::LevelOne.new
-    @player = Player.new(x: 320, y: 470)
     @time_milli = 0
     @font = Gosu::Font.new(20)
     @fortifications = @level.player_fortifications
@@ -28,16 +25,16 @@ class SpaceInvaders < Gosu::Window
 
   def update
     if arrow_left?
-      player.move_left
+      @level.players.each {|p| p.move_left }
     end
 
     if arrow_right?
-      player.move_right
+      @level.players.each {|p| p.move_right }
     end
 
-    player.move
+    @level.players.each {|p| p.move }
 
-    @player.lasers.each {|laser| laser.go }
+    @level.players.each {|p| p.lasers.each {|laser| laser.go } }
     @level.aliens.each {|alien| alien.lasers.each {|laser| laser.go }}
     @level.aliens.each {|alien| alien.go }
 
@@ -54,12 +51,17 @@ class SpaceInvaders < Gosu::Window
     end
 
     @fortifications.draw
-    player.draw(
-      @level.aliens.map {|alien| alien.lasers}.flatten,
-      calc_seconds
-    )
+    @level.players.each do |p|
+      p.draw(
+        @level.aliens.map {|alien| alien.lasers}.flatten,
+        calc_seconds
+      )
+    end
 
-    @player.lasers = player.lasers.select {|laser| inside_viewable_window?(laser.y) }
+    @level.players.each do |p|
+      p.lasers = p.lasers.select {|laser| inside_viewable_window?(laser.y) }
+    end
+
     @level.aliens.each do |alien|
       alien.lasers = alien.lasers.select {|laser| inside_viewable_window?(laser.y) }
     end
@@ -72,16 +74,20 @@ class SpaceInvaders < Gosu::Window
       @level.aliens.each {|alien| alien.shoot_laser(calc_seconds)}
     end
 
-    @font.draw("Health: #{ player.health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-    @font.draw("Points: #{ player.tally_score(@level.aliens) }", 10, 35, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw("Health: #{ @level.player_health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw("Points: #{ @level.score }", 10, 35, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+
     unless @level.over?
 
-      @level.aliens = @level.aliens.reject do |alien|
-        if player.shot_alien?(alien)
-          @level.inc_kill_count
-          true
-        else
-          false
+      # TODO: Move to level (or somewhere)
+      @level.players.each do |p|
+        @level.aliens = @level.aliens.reject do |alien|
+          if p.shot_alien?(alien)
+            @level.inc_kill_count
+            true
+          else
+            false
+          end
         end
       end
 
@@ -116,8 +122,10 @@ class SpaceInvaders < Gosu::Window
       when Gosu::KB_ESCAPE
         close
       when Gosu::KB_SPACE
-        unless player.dead?
-          player.shoot_laser
+        @level.players.each do |p|
+          unless p.dead?
+            p.shoot_laser
+          end
         end
       else
         super

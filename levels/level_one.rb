@@ -30,6 +30,31 @@ module Levels
     def initialize
       @kill_count = 0
       @aliens = initialize_aliens
+      @score = 0
+    end
+
+    def players
+      @player_one ||= Player.new(x: 420, y: 470)
+      @players = if two_players?
+                   [
+                     @player_one,
+                     @player_two ||= Player.new(x: @player_one.x + 50, y: @player_one.y)
+                   ]
+                 else
+                   [@player_one]
+                 end
+    end
+
+    def player_health
+      if @player_two
+        @player_one.health - (Player::INITIAL_HEALTH - @player_two.health)
+      else
+        @player_one.health
+      end
+    end
+
+    def score
+      @player_one.tally_score(@aliens)
     end
 
     def name
@@ -53,7 +78,7 @@ module Levels
     end
 
     def won?
-      @kill_count == kills_to_win
+      @kill_count == kills_to_win && player_health >= 0
     end
 
     def repopulate_aliens
@@ -75,6 +100,10 @@ module Levels
     end
 
     private
+
+    def two_players?
+      @kill_count >= 15 && @kill_count <= 30
+    end
 
     def initialize_aliens
       1.upto(rand(8)).map do |_|
