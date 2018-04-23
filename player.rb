@@ -98,7 +98,6 @@ class Player
     second = seconds.round
 
     if valid_hit?(second, lasers)
-      puts "HIT"
       @hit_second = second
       @health -= 1
       true
