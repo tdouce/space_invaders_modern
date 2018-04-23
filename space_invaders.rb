@@ -39,6 +39,9 @@ class SpaceInvaders < Gosu::Window
     @world.level.aliens.each {|alien| alien.lasers.each {|laser| laser.go }}
     @world.level.aliens.each {|alien| alien.go }
 
+    # Calculate score here (rather than #draw). calculating score in #draw causes things to be out-of-sync
+    @world.calculate_score
+
     if !@world.end_of_game? && @world.level.won?
       @world.transition_to_next_level
     end
@@ -97,7 +100,7 @@ class SpaceInvaders < Gosu::Window
 
     @font.draw("#{ @world.level.name }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     @font.draw("Health: #{ @world.level.player_health }", 10, 33, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-    @font.draw("Points: #{ @world.level.score }", 10, 55, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw("Points: #{ @world.score }", 10, 55, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
 
     if @world.end_of_game? && @world.level.won?
       @font.draw("Congratulations! You beat the game!", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)

@@ -4,6 +4,7 @@ require_relative 'level_two'
 module Levels
   class World
     attr_accessor :level
+    attr_reader :score
 
     def initialize
       @idx = 0
@@ -12,6 +13,9 @@ module Levels
 
     def transition_to_next_level
       @level = levels[@idx += 1].new
+
+    def calculate_score
+      @score = level.score
     end
 
     def end_of_game?
