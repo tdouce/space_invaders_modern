@@ -96,15 +96,16 @@ class SpaceInvaders < Gosu::Window
       end
     end
 
-    @font.draw("Health: #{ @level.player_health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-    @font.draw("Points: #{ @level.score }", 10, 35, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw("#{ @level.name }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw("Health: #{ @level.player_health }", 10, 33, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw("Points: #{ @level.score }", 10, 55, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
 
-    if @level.lost?
-      @font.draw("GAME OVER", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-    end
-
-    if @level.won?
+    if @world.end_of_game? && @level.won?
+      @font.draw("Congratulations! You beat the game!", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    elsif @level.won?
       @font.draw("#{ @level.name} Complete!", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    elsif @level.lost?
+      @font.draw("GAME OVER", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     end
   end
 
