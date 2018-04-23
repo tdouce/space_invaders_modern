@@ -18,7 +18,8 @@ class SpaceInvaders < Gosu::Window
   def initialize
     super(WIDTH, HEIGHT)
     self.caption = "Space Invaders"
-    @level = Levels::World.new.current_level
+    @world = Levels::World.new
+    @level = @world.current_level
     @time_milli = 0
     @font = Gosu::Font.new(20)
     @fortifications = @level.player_fortifications
@@ -38,6 +39,10 @@ class SpaceInvaders < Gosu::Window
     @level.players.each {|p| p.lasers.each {|laser| laser.go } }
     @level.aliens.each {|alien| alien.lasers.each {|laser| laser.go }}
     @level.aliens.each {|alien| alien.go }
+
+    if !@world.end_of_game? && @level.won?
+      @level = @world.transition_to_next_level
+    end
 
     unless @level.over?
       @level.aliens.each {|alien| alien.shoot_laser(calc_seconds)}

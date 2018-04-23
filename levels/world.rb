@@ -16,7 +16,7 @@ module Levels
     end
 
     def end_of_game?
-      levels[@idx].nil?
+      levels[@idx + 1].nil?
     end
 
     private
