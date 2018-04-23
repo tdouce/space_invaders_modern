@@ -5,6 +5,7 @@ require_relative 'zorder'
 require_relative 'alien/space_ship'
 require_relative 'levels/level_one'
 require_relative 'controllable'
+require_relative 'levels/world'
 
 include Gosu
 include ZOrder
@@ -17,7 +18,7 @@ class SpaceInvaders < Gosu::Window
   def initialize
     super(WIDTH, HEIGHT)
     self.caption = "Space Invaders"
-    @level = Levels::LevelOne.new
+    @level = Levels::World.new.current_level
     @time_milli = 0
     @font = Gosu::Font.new(20)
     @fortifications = @level.player_fortifications
