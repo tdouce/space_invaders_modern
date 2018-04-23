@@ -38,6 +38,26 @@ class SpaceInvaders < Gosu::Window
     @level.aliens.each {|alien| alien.lasers.each {|laser| laser.go }}
     @level.aliens.each {|alien| alien.go }
 
+    unless @level.over?
+      @level.aliens.each {|alien| alien.shoot_laser(calc_seconds)}
+    end
+
+    unless @level.over?
+      # TODO: Move to level (or somewhere)
+      @level.players.each do |p|
+        @level.aliens = @level.aliens.reject do |alien|
+          if p.shot_alien?(alien)
+            @level.inc_kill_count
+            true
+          else
+            false
+          end
+        end
+      end
+
+      @level.repopulate_aliens
+    end
+
     @time_milli += update_interval
   end
 
@@ -70,29 +90,10 @@ class SpaceInvaders < Gosu::Window
       @level.players.each do |p|
         @fortifications.assess_damage(p, @level.aliens)
       end
-
-      @level.aliens.each {|alien| alien.shoot_laser(calc_seconds)}
     end
 
     @font.draw("Health: #{ @level.player_health }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     @font.draw("Points: #{ @level.score }", 10, 35, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-
-    unless @level.over?
-
-      # TODO: Move to level (or somewhere)
-      @level.players.each do |p|
-        @level.aliens = @level.aliens.reject do |alien|
-          if p.shot_alien?(alien)
-            @level.inc_kill_count
-            true
-          else
-            false
-          end
-        end
-      end
-
-      @level.repopulate_aliens
-    end
 
     if @level.lost?
       @font.draw("GAME OVER", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
