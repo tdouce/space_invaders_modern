@@ -3,16 +3,15 @@ require_relative 'level_two'
 
 module Levels
   class World
+    attr_accessor :current_level
+
     def initialize
       @idx = 0
-    end
-
-    def current_level
-      levels[@idx].new
+      @current_level = levels[@idx].new
     end
 
     def transition_to_next_level
-      levels[@idx += 1].new
+      @current_level = levels[@idx += 1].new
     end
 
     def end_of_game?

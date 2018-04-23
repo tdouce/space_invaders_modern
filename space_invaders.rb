@@ -19,39 +19,38 @@ class SpaceInvaders < Gosu::Window
     super(WIDTH, HEIGHT)
     self.caption = "Space Invaders"
     @world = Levels::World.new
-    @level = @world.current_level
     @time_milli = 0
     @font = Gosu::Font.new(20)
-    @fortifications = @level.player_fortifications
+    @fortifications = @world.current_level.player_fortifications
   end
 
   def update
     if arrow_left?
-      @level.players.each {|p| p.move_left }
+      @world.current_level.players.each {|p| p.move_left }
     end
 
     if arrow_right?
-      @level.players.each {|p| p.move_right }
+      @world.current_level.players.each {|p| p.move_right }
     end
 
-    @level.players.each {|p| p.move }
+    @world.current_level.players.each {|p| p.move }
 
-    @level.players.each {|p| p.lasers.each {|laser| laser.go } }
-    @level.aliens.each {|alien| alien.lasers.each {|laser| laser.go }}
-    @level.aliens.each {|alien| alien.go }
+    @world.current_level.players.each {|p| p.lasers.each {|laser| laser.go } }
+    @world.current_level.aliens.each {|alien| alien.lasers.each {|laser| laser.go }}
+    @world.current_level.aliens.each {|alien| alien.go }
 
-    if !@world.end_of_game? && @level.won?
-      @level = @world.transition_to_next_level
+    if !@world.end_of_game? && @world.current_level.won?
+      @world.transition_to_next_level
     end
 
-    unless @level.over?
-      @level.aliens.each {|alien| alien.shoot_laser(calc_seconds)}
+    unless @world.current_level.over?
+      @world.current_level.aliens.each {|alien| alien.shoot_laser(calc_seconds)}
 
       # TODO: Move to level (or somewhere)
-      @level.players.each do |p|
-        @level.aliens = @level.aliens.reject do |alien|
+      @world.current_level.players.each do |p|
+        @world.current_level.aliens = @world.current_level.aliens.reject do |alien|
           if p.shot_alien?(alien)
-            @level.inc_kill_count
+            @world.current_level.inc_kill_count
             true
           else
             false
@@ -59,52 +58,52 @@ class SpaceInvaders < Gosu::Window
         end
       end
 
-      @level.repopulate_aliens
+      @world.current_level.repopulate_aliens
     end
 
     @time_milli += update_interval
   end
 
   def draw
-    @level.background_image.draw(0, 0, ZOrder::BACKGROUND)
-    @level.aliens.each {|alien| alien.draw }
+    @world.current_level.background_image.draw(0, 0, ZOrder::BACKGROUND)
+    @world.current_level.aliens.each {|alien| alien.draw }
 
-    unless @level.over?
-      @level.players.each {|p| p.lasers.each {|laser| laser.draw } }
-      @level.aliens.each {|alien| alien.lasers.each {|laser| laser.draw }}
+    unless @world.current_level.over?
+      @world.current_level.players.each {|p| p.lasers.each {|laser| laser.draw } }
+      @world.current_level.aliens.each {|alien| alien.lasers.each {|laser| laser.draw }}
     end
 
     @fortifications.draw
-    @level.players.each do |p|
+    @world.current_level.players.each do |p|
       p.draw(
-        @level.aliens.map {|alien| alien.lasers}.flatten,
+        @world.current_level.aliens.map {|alien| alien.lasers}.flatten,
         calc_seconds
       )
     end
 
-    @level.players.each do |p|
+    @world.current_level.players.each do |p|
       p.lasers = p.lasers.select {|laser| inside_viewable_window?(laser.y) }
     end
 
-    @level.aliens.each do |alien|
+    @world.current_level.aliens.each do |alien|
       alien.lasers = alien.lasers.select {|laser| inside_viewable_window?(laser.y) }
     end
 
-    unless @level.over?
-      @level.players.each do |p|
-        @fortifications.assess_damage(p, @level.aliens)
+    unless @world.current_level.over?
+      @world.current_level.players.each do |p|
+        @fortifications.assess_damage(p, @world.current_level.aliens)
       end
     end
 
-    @font.draw("#{ @level.name }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-    @font.draw("Health: #{ @level.player_health }", 10, 33, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-    @font.draw("Points: #{ @level.score }", 10, 55, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw("#{ @world.current_level.name }", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw("Health: #{ @world.current_level.player_health }", 10, 33, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw("Points: #{ @world.current_level.score }", 10, 55, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
 
-    if @world.end_of_game? && @level.won?
+    if @world.end_of_game? && @world.current_level.won?
       @font.draw("Congratulations! You beat the game!", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-    elsif @level.won?
-      @font.draw("#{ @level.name} Complete!", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-    elsif @level.lost?
+    elsif @world.current_level.won?
+      @font.draw("#{ @world.current_level.name} Complete!", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    elsif @world.current_level.lost?
       @font.draw("GAME OVER", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     end
   end
@@ -128,7 +127,7 @@ class SpaceInvaders < Gosu::Window
       when Gosu::KB_ESCAPE
         close
       when Gosu::KB_SPACE
-        @level.players.each do |p|
+        @world.current_level.players.each do |p|
           unless p.dead?
             p.shoot_laser
           end
