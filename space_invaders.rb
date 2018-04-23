@@ -41,9 +41,7 @@ class SpaceInvaders < Gosu::Window
 
     unless @level.over?
       @level.aliens.each {|alien| alien.shoot_laser(calc_seconds)}
-    end
 
-    unless @level.over?
       # TODO: Move to level (or somewhere)
       @level.players.each do |p|
         @level.aliens = @level.aliens.reject do |alien|
