@@ -12,7 +12,8 @@ module Levels
     end
 
     def transition_to_next_level
-      @level = levels[@idx += 1].new
+      @level = levels[@idx += 1].new(initial_score: calculate_score)
+    end
 
     def calculate_score
       @score = level.score

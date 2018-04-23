@@ -27,9 +27,11 @@ module Levels
   class LevelTwo
     attr_accessor :kill_count, :aliens
 
-    def initialize
+    def initialize(initial_score: 0)
       @kill_count = 0
       @aliens = initialize_aliens
+      puts "initial score: #{ initial_score }"
+      @initial_score = initial_score
       players
     end
 
@@ -54,7 +56,7 @@ module Levels
     end
 
     def score
-      players.reduce(0) do |memo, p|
+      players.reduce(@initial_score) do |memo, p|
         memo += p.tally_score(@aliens)
       end
     end
