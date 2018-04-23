@@ -12,7 +12,10 @@ module Levels
     end
 
     def transition_to_next_level
-      @level = levels[@idx += 1].new(initial_score: calculate_score)
+      @level = levels[@idx += 1].new(
+        initial_score: calculate_score,
+        init_player_x: level.players.first.x
+      )
     end
 
     def calculate_score
