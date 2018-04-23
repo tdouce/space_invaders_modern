@@ -3,11 +3,11 @@ include Gosu
 
 class Player
   attr_reader :angle, :x, :y, :vel_x, :vel_y, :health, :score
-  attr_accessor :lasers
+  attr_accessor :lasers, :active
 
   INITIAL_HEALTH = 5
 
-  def initialize(x:, y:)
+  def initialize(x:, y:, active: false)
     @image = Gosu::Image.new("media/space_ship.bmp")
     @beep = Gosu::Sample.new("media/beep.wav")
     @x = x
@@ -19,6 +19,11 @@ class Player
     @hit_second = 0
     @score = 0
     @lasers = []
+    @active = active
+  end
+
+  def active?
+    @active
   end
 
   def move_left
@@ -45,14 +50,18 @@ class Player
   end
 
   def draw(lasers, seconds)
-    hit = assess_damage(lasers, seconds)
-    unless hit
-      @image.draw_rot(@x, @y, 1, @angle)
+    when_active do
+      hit = assess_damage(lasers, seconds)
+      unless hit
+        @image.draw_rot(@x, @y, 1, @angle)
+      end
     end
   end
 
   def shoot_laser
-    @lasers << Laser.new(x: @x, y: @y)
+    when_active do
+      @lasers << Laser.new(x: @x, y: @y)
+    end
   end
 
   def dead?
@@ -79,10 +88,17 @@ class Player
 
   private
 
+  def when_active
+    if active
+      yield
+    end
+  end
+
   def assess_damage(lasers, seconds)
     second = seconds.round
 
     if valid_hit?(second, lasers)
+      puts "HIT"
       @hit_second = second
       @health -= 1
       true

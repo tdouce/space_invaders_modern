@@ -27,30 +27,31 @@ module Levels
   class LevelOne
     attr_accessor :kill_count, :aliens
 
-    def initialize(initial_score: 0)
+    def initialize(initial_score: 0, init_player_x: 420, init_player_y: 470)
       @kill_count = 0
       @aliens = initialize_aliens
+      @max_number_of_players = 2
+      @init_player_x = init_player_x
+      @init_player_y = init_player_y
+      @players = initialize_players
       @initial_score = initial_score
-      players
     end
 
     def players
-      @player_one ||= Player.new(x: 420, y: 470)
-      @players = if two_players?
-                   [
-                     @player_one,
-                     @player_two ||= Player.new(x: @player_one.x + 50, y: @player_one.y)
-                   ]
-                 else
-                   [@player_one]
-                 end
+      @players.each_with_index.map do |p, idx|
+        p.active = if two_players?
+                     true
+                   else
+                     (idx == 0)
+                   end
+        p
+      end
     end
 
     def player_health
-      if @player_two
-        @player_one.health - (Player::INITIAL_HEALTH - @player_two.health)
-      else
-        @player_one.health
+      @players.reduce(Player::INITIAL_HEALTH) do |agg, p|
+        agg -= (Player::INITIAL_HEALTH - p.health)
+        agg
       end
     end
 
@@ -104,8 +105,26 @@ module Levels
 
     private
 
+    def initialize_players
+      num_of_players = 1.upto(@max_number_of_players - 1).to_a
+      @players = [
+        Player.new(
+          x: @init_player_x,
+          y: @init_player_y,
+          active: true
+        )
+      ]
+      current_player_x = @init_player_x
+      num_of_players.each do |_|
+        current_player_x += 50
+        @players << Player.new(x: current_player_x, y: @init_player_y)
+      end
+
+      @players
+    end
+
     def two_players?
-      @kill_count >= 15 && @kill_count <= 30
+      @kill_count >= 2 && @kill_count <= 8
     end
 
     def initialize_aliens
