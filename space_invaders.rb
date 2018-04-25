@@ -6,6 +6,7 @@ require_relative 'alien/space_ship'
 require_relative 'levels/level_one'
 require_relative 'controllable'
 require_relative 'levels/world'
+require_relative 'stop_watch'
 
 include Gosu
 include ZOrder
@@ -21,7 +22,6 @@ class SpaceInvaders < Gosu::Window
     @world = Levels::World.new
     @time_milli = 0
     @font = Gosu::Font.new(20)
-    @fortifications = @world.level.player_fortifications
   end
 
   def update
@@ -41,10 +41,6 @@ class SpaceInvaders < Gosu::Window
 
     # Calculate score here (rather than #draw). calculating score in #draw causes things to be out-of-sync
     @world.calculate_score
-
-    if !@world.end_of_game? && @world.level.won?
-      @world.transition_to_next_level
-    end
 
     unless @world.level.over?
       @world.level.aliens.each {|alien| alien.shoot_laser(calc_seconds)}
@@ -76,7 +72,7 @@ class SpaceInvaders < Gosu::Window
       @world.level.aliens.each {|alien| alien.lasers.each {|laser| laser.draw }}
     end
 
-    @fortifications.draw
+    @world.level.player_fortifications.draw
     @world.level.players.each do |p|
       p.draw(
         @world.level.aliens.map {|alien| alien.lasers}.flatten,
@@ -94,7 +90,7 @@ class SpaceInvaders < Gosu::Window
 
     unless @world.level.over?
       @world.level.players.each do |p|
-        @fortifications.assess_damage(p, @world.level.aliens)
+        @world.level.player_fortifications.assess_damage(p, @world.level.aliens)
       end
     end
 
@@ -105,7 +101,9 @@ class SpaceInvaders < Gosu::Window
     if @world.end_of_game? && @world.level.won?
       @font.draw("Congratulations! You beat the game!", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     elsif @world.level.won?
-      @font.draw("#{ @world.level.name} Complete!", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+      StopWatch.time(3, idempotency_key: @world.level.name, after_timer: -> { @world.transition_to_next_level}) do
+        @font.draw("#{ @world.level.name} Complete!", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+      end
     elsif @world.level.lost?
       @font.draw("GAME OVER", 315, 225, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
     end
