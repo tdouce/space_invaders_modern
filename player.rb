@@ -1,4 +1,6 @@
 require 'gosu'
+require_relative 'regulator'
+
 include Gosu
 
 class Player
@@ -20,6 +22,7 @@ class Player
     @score = 0
     @lasers = []
     @active = active
+    @regulator = Regulator.new
   end
 
   def active?
@@ -60,8 +63,14 @@ class Player
 
   def shoot_laser
     when_active do
-      @lasers << Laser.new(x: @x, y: @y)
+      @regulator.regulate do
+        @lasers << Laser.new(x: @x, y: @y)
+      end
     end
+  end
+
+  def can_shoot?
+
   end
 
   def dead?
