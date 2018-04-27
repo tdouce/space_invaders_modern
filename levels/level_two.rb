@@ -16,7 +16,7 @@ module Levels
     end
 
     def kills_to_win
-      5
+      10
     end
 
     def player_fortifications
