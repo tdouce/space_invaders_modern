@@ -24,5 +24,14 @@ module Levels
     def player_fortifications
       @player_fortifications ||= Fortifications.new
     end
+
+    def initialize_aliens
+      1.upto(rand(5)).map do |_|
+        Alien::SpaceShip.new(
+          x: 0,
+          y: rand(40..200), angle: rand(-20..20)
+        )
+      end
+    end
   end
 end

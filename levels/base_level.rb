@@ -78,6 +78,10 @@ module Levels
       raise "Must implement"
     end
 
+    def initialize_aliens
+      raise "Must Implement"
+    end
+
     private
 
     def initialize_players
@@ -100,15 +104,6 @@ module Levels
 
     def two_players?
       @kill_count >= 2 && @kill_count <= 8
-    end
-
-    def initialize_aliens
-      1.upto(rand(8)).map do |_|
-        Alien::SpaceShip.new(
-          x: 0,
-          y: rand(40..200), angle: rand(-20..20)
-        )
-      end
     end
 
     def repopulate_aliens?
