@@ -22,7 +22,8 @@ class Player
     @score = 0
     @lasers = []
     @active = active
-    @regulator = Regulator.new
+    @shoot_laser_regulator = Regulator.new
+    @taking_damage_regulator = Regulator.new(once_every_seconds: 0.5)
   end
 
   def active?
@@ -52,10 +53,15 @@ class Player
     @vel_y *= 0.95
   end
 
-  def draw(lasers, seconds)
+  def draw(lasers)
     when_active do
-      hit = assess_damage(lasers, seconds)
-      unless hit
+      hit = hit_by_laser?(lasers)
+
+      if hit
+        @taking_damage_regulator.regulate do
+          @health -= 1
+        end
+      else
         @image.draw_rot(@x, @y, 1, @angle)
       end
     end
@@ -63,14 +69,10 @@ class Player
 
   def shoot_laser
     when_active do
-      @regulator.regulate do
+      @shoot_laser_regulator.regulate do
         @lasers << Laser.new(x: @x, y: @y)
       end
     end
-  end
-
-  def can_shoot?
-
   end
 
   def dead?
@@ -101,22 +103,6 @@ class Player
     if active
       yield
     end
-  end
-
-  def assess_damage(lasers, seconds)
-    second = seconds.round
-
-    if valid_hit?(second, lasers)
-      @hit_second = second
-      @health -= 1
-      true
-    else
-      false
-    end
-  end
-
-  def valid_hit?(second, lasers)
-    (@hit_second != second) && hit_by_laser?(lasers)
   end
 
   def hit_by_laser?(lasers)

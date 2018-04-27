@@ -1,4 +1,5 @@
 require_relative '../alien/laser'
+require_relative '../regulator'
 require 'gosu'
 
 include ZOrder
@@ -8,7 +9,7 @@ module Alien
     attr_reader :x, :y, :angle, :vel_x, :vel_y, :points_worth
     attr_accessor :lasers
 
-    def initialize(x: 50, y: 50, angle: 5, vel_x: 0, vel_y: 0)
+    def initialize(x: 50, y: 50, angle: 5, vel_x: 0, vel_y: 0, shot_rate: rand(2..5))
       @image = Gosu::Image.new("media/alien_spaceship_1.png")
       @x = x
       @y = y
@@ -19,6 +20,7 @@ module Alien
       @shot_second = 0
       @points_worth = 10
       @lasers = []
+      @shoot_laser_regulator = Regulator.new(once_every_seconds: shot_rate)
     end
 
     def draw
@@ -34,8 +36,8 @@ module Alien
       collectable?(@x, @y, laser.x, laser.y)
     end
 
-    def shoot_laser(seconds)
-      if time_to_shoot?(seconds)
+    def shoot_laser
+      @shoot_laser_regulator.regulate do
         @lasers << Alien::Laser.new(x: @x, y: @y)
       end
     end

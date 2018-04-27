@@ -43,7 +43,7 @@ class SpaceInvaders < Gosu::Window
     @world.calculate_score
 
     unless @world.level.over?
-      @world.level.aliens.each {|alien| alien.shoot_laser(calc_seconds)}
+      @world.level.aliens.each {|alien| alien.shoot_laser }
 
       # TODO: Move to level (or somewhere)
       @world.level.players.each do |p|
@@ -74,10 +74,7 @@ class SpaceInvaders < Gosu::Window
 
     @world.level.player_fortifications.draw
     @world.level.players.each do |p|
-      p.draw(
-        @world.level.aliens.map {|alien| alien.lasers}.flatten,
-        calc_seconds
-      )
+      p.draw(@world.level.aliens.map {|alien| alien.lasers}.flatten)
     end
 
     @world.level.players.each do |p|
